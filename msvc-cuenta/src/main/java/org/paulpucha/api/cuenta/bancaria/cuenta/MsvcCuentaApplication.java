@@ -10,6 +10,6 @@ public class MsvcCuentaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MsvcCuentaApplication.class, args);
-	}
 
+	}
 }
