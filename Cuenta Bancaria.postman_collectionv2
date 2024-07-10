@@ -453,48 +453,6 @@
 					},
 					"response": []
 				},
-				{
-					"name": "Reporte",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "default"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8082/api/movimientos/reportes?identificacion=172069351&fecha=2024-05-01,2024-05-22",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"api",
-								"movimientos",
-								"reportes"
-							],
-							"query": [
-								{
-									"key": "identificacion",
-									"value": "172069351"
-								},
-								{
-									"key": "fecha",
-									"value": "2024-05-01,2024-05-22"
-								}
-							]
-						}
-					},
-					"response": []
-				}
 			]
 		}
 	]
