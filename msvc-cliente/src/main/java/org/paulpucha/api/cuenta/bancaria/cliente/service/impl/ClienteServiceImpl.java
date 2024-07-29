@@ -120,6 +120,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Optional<Cliente> obtenerPorIdentificacion(String identificacion)
         throws ClienteException {
+        
         try {
             Optional<Cliente> clienteEncontrado = clienteRepository
                 .obtenerPorIdentificacion(identificacion);

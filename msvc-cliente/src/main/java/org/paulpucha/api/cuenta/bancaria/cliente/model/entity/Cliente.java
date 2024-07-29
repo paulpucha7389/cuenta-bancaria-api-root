@@ -57,13 +57,4 @@ public class Cliente extends Persona implements Serializable {
 
     private String estado;
 
-	/*@OneToMany(mappedBy = "cliente")
-	@JsonIgnore
-	private List<Cuenta> cuentas;
-
-	@OneToMany(mappedBy = "cliente")
-	@JsonIgnore
-	private List<Movimiento> movimientos;*/
-
-
 }

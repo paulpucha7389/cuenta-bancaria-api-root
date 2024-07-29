@@ -61,7 +61,7 @@ public class ClienteController {
                 .body(BaseResponseDto.builder().data(service.create(clienteEntradaDto)).build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -104,7 +104,7 @@ public class ClienteController {
                     .build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -123,7 +123,7 @@ public class ClienteController {
             return ResponseEntity.ok().body(BaseResponseDto.builder().data(service.read()).build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -149,7 +149,7 @@ public class ClienteController {
                 .body(BaseResponseDto.builder().data(service.update(clienteEntradaDto)).build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -172,7 +172,7 @@ public class ClienteController {
                 .body(BaseResponseDto.builder().message("Registro Eliminado").build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }

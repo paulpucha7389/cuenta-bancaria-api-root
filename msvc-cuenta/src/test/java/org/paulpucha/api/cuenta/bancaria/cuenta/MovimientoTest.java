@@ -52,4 +52,22 @@ public class MovimientoTest {
         respuestaActual = this.movimientoService.obtenerPorNumeroCuenta(456789);
         Assert.assertNotNull(respuestaActual);
     }
+
+    void whenObtenerPorNumeroCuentaThenEmptyList() throws CuentaException {
+
+        List<Movimiento> listaMovimientoEsperado = new ArrayList<>();
+
+        Cuenta cuentaEsperada = Cuenta.builder().numeroCuenta(456789).idCuenta(1L).idCliente(1L).
+                tipoCuenta("Ahorros").saldoInicial(BigDecimal.valueOf(1000L)).estado("True").build();
+
+        when(this.cuentaRepository.findByNumeroCuenta(456789)).thenReturn(Optional.of(cuentaEsperada));
+
+        when(this.movimientoRepository.findByIdCuenta(1L)).thenReturn(listaMovimientoEsperado);
+
+        List<Movimiento> respuestaActual = this.movimientoService.obtenerPorNumeroCuenta(456789);
+
+        Assert.assertNotNull(respuestaActual);
+        Assert.assertTrue(respuestaActual.isEmpty());
+    }
+
 }

@@ -12,5 +12,4 @@ public interface ClienteClientRest {
     @GetMapping("/{identificacion}")
     ResponseEntity<BaseResponseDto> obtenerClientePorIdentificacion(@PathVariable String identificacion);
 
-
 }

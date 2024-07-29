@@ -1,5 +1,6 @@
 package org.paulpucha.api.cuenta.bancaria.cuenta;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -34,6 +35,19 @@ public class CuentaTest {
             Optional.ofNullable(cuentaEsperada));
         respuestaActual = this.cuentaService.obtenerPorNumeroCuenta(datosEntrada);
         Assert.assertNotNull(respuestaActual);
+    }
 
+    @Test
+    void whenObtenerCuentaPorNumeroCuentaThenOptionalEmpty() {
+        int datosEntrada = 456789;
+
+        // Configura el mock para que devuelva un Optional vacío cuando no se encuentra la cuenta
+        when(this.cuentaRepository.findByNumeroCuenta(datosEntrada)).thenReturn(Optional.empty());
+
+        // Ejecuta el método bajo prueba
+        Optional<Cuenta> respuestaActual = this.cuentaService.obtenerPorNumeroCuenta(datosEntrada);
+
+        // Verifica que la respuesta es Optional.empty()
+        assertTrue(respuestaActual.isEmpty(), "No se puedo encuentrar la cuenta");
     }
 }

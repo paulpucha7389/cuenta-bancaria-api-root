@@ -65,7 +65,7 @@ CuentaController {
                 .body(BaseResponseDto.builder().data(service.create(cuentaEntradaDto)).build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -88,7 +88,7 @@ CuentaController {
                     .build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -114,7 +114,7 @@ CuentaController {
                 .body(BaseResponseDto.builder().data(service.update(cuentaEntradaDto)).build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
@@ -136,7 +136,7 @@ CuentaController {
                 .body(BaseResponseDto.builder().message("Registro Eliminado").build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.internalServerError()
+            return ResponseEntity.badRequest()
                 .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }

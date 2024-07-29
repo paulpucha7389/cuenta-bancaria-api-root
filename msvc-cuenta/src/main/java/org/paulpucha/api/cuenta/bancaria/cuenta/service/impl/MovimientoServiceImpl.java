@@ -4,12 +4,16 @@
 package org.paulpucha.api.cuenta.bancaria.cuenta.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
+
+import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.ReporteDto;
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.entrada.MovimientoEntradaDto;
 import org.paulpucha.api.cuenta.bancaria.cuenta.enumeration.TipoMovimientoEnum;
 import org.paulpucha.api.cuenta.bancaria.cuenta.exception.CuentaException;
@@ -21,6 +25,7 @@ import org.paulpucha.api.cuenta.bancaria.cuenta.service.MovimientoService;
 import org.paulpucha.api.cuenta.bancaria.cuenta.model.entity.Movimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * <b> Servicio para el Movimiento. </b>
@@ -52,6 +57,16 @@ public class MovimientoServiceImpl implements MovimientoService {
     @Transactional
     public Movimiento create(MovimientoEntradaDto movimientoEntradaDto) throws CuentaException {
         try {
+            if (movimientoEntradaDto.getValor() <= 0) {
+                throw new CuentaException("El valor debe ser positivo.");
+            }
+
+            String tipoMovimiento = movimientoEntradaDto.getTipoMovimiento();
+            if (!TipoMovimientoEnum.CREDITO.getDescripcion().equalsIgnoreCase(tipoMovimiento) &&
+                    !TipoMovimientoEnum.DEBITO.getDescripcion().equalsIgnoreCase(tipoMovimiento)
+            ) {
+                throw new CuentaException("Tipo de movimiento inválido. Debe ser 'CREDITO' o 'DEBITO'.");
+            }
             Optional<Cuenta> cuenta = cuentaService.obtenerPorNumeroCuenta(
                 movimientoEntradaDto.getNumeroCuenta());
             if (!cuenta.isPresent()) {
@@ -64,7 +79,7 @@ public class MovimientoServiceImpl implements MovimientoService {
                 saldo = credito(cuenta.get().getSaldoInicial(),
                     BigDecimal.valueOf(movimientoEntradaDto.getValor()));
             } else if (TipoMovimientoEnum.DEBITO.getDescripcion()
-                .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
+                .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento()))  {
                 saldo = debito(cuenta.get().getSaldoInicial(),
                     BigDecimal.valueOf(movimientoEntradaDto.getValor()));
 
@@ -162,8 +177,7 @@ public class MovimientoServiceImpl implements MovimientoService {
             } else if (TipoMovimientoEnum.DEBITO.getDescripcion()
                 .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
                 saldo = debito(cuenta.get().getSaldoInicial(),
-                    BigDecimal.valueOf(movimientoEntradaDto.getValor()));
-
+                        BigDecimal.valueOf(movimientoEntradaDto.getValor()));
             }
 
             movimiento.setTipoMovimiento(movimientoEntradaDto.getTipoMovimiento());
@@ -195,6 +209,37 @@ public class MovimientoServiceImpl implements MovimientoService {
             movimientoRepository.deleteByIdMovimiento(movimiento.get().getIdMovimiento());
         } catch (CuentaException e) {
             throw new CuentaException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<ReporteDto> generarReporte(String identififcacion, String fecha)
+            throws CuentaException, RuntimeException {
+        try {
+            if (ObjectUtils.isEmpty(fecha)) {
+                throw new CuentaException("Fechas Obligatorias.");
+            }
+            String[] fechas = fecha.split(",");
+            if (fechas.length != 2) {
+                throw new CuentaException(
+                        "Coloque dos fechas con formato yyyyMMdd separadas como coma (.)");
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicial = formatter.parse(fechas[0]);
+            Date fechaFinal = formatter.parse(fechas[1]);
+            List<ReporteDto> lista = movimientoRepository.obtenerMovimientosPorIdentificacionPorFechas(
+                    identififcacion, fechaInicial, fechaFinal);
+            if (ObjectUtils.isEmpty(lista)) {
+                throw new CuentaException("No se encuentra datos con los parametros indicados.");
+            }
+            return lista;
+
+        } catch (CuentaException e) {
+            throw new CuentaException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 }

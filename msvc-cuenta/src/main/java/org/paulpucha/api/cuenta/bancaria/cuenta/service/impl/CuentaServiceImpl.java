@@ -137,7 +137,7 @@ public class CuentaServiceImpl implements CuentaService {
     }
 
     /**
-     * {@inheritDoc}
+     * {Llamado Open Feing}
      */
     @Override
     public List<Cuenta> obtenerCuentasPorCliente(String identificacion) throws CuentaException {
