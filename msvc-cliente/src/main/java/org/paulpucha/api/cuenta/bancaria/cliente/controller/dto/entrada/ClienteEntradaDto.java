@@ -3,16 +3,13 @@
  */
 package org.paulpucha.api.cuenta.bancaria.cliente.controller.dto.entrada;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 
@@ -26,33 +23,44 @@ import lombok.Setter;
  */
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ClienteEntradaDto {
 
-	@NotBlank
+	@NotNull(message = "es requerido ")
+	@NotBlank(message = "requiere un número de identificación válido")
+	@Pattern(regexp = "^\\d{1,10}$", message = "permite solo dígitos del 0 al 9 y un máximo de 10 dígitos")
+	@Size(min = 1, max = 10, message = "permite solo un máximo de 10 dígitos")
 	private String identificacion;
 
-	@NotBlank
+	@NotNull(message = "es requerdio")
+	@NotBlank(message = "requiere una contraseña")
 	private String contrasena;
 
-	@NotBlank
-	private String estado;
+	@NotNull(message = "es requerido")
+	private Boolean estado;
 
-	@NotBlank
+	@NotNull(message = "es requerido")
+	@NotBlank(message = "es requerido")
 	private String direccion;
 
+	@NotNull(message = "es requerido")
+	@Max(value=105, message = "permite un valor hasta 105")
+	@Min(value=18, message = "permite un valor hasta 18")
+	@Positive(message = "permite solo valores positivos")
 	private int edad;
 
+	@NotNull(message = "es requerido")
+	@NotBlank(message = "requiere genero Masculino o Femwnino")
 	private String genero;
 
-	@NotBlank
+	@NotNull(message = "es requerido")
+	@NotBlank(message = "debe ser llenado")
 	private String nombre;
 
-	@NotBlank
+	@NotNull(message = "es requerido")
+	@NotBlank(message = "requiere un teléfono válido")
+	@Pattern(regexp = "^\\d{1,10}$", message = "permite solo dígitos del 0 al 9 y un máximo de 10 dígitos")
+	@Size(min = 1, max = 10, message = "permite solo un máximo de 10 dígitos")
 	private String telefono;
-
 }

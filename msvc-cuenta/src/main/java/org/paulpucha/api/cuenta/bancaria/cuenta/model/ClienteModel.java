@@ -33,7 +33,7 @@ public class ClienteModel {
 
     private String contrasena;
 
-    private String estado;
+    private Boolean estado;
 
     private String direccion;
 
@@ -46,6 +46,10 @@ public class ClienteModel {
     private String nombre;
 
     private String telefono;
+
+    public boolean isEstado() {
+        return estado;
+    }
 
 
 }

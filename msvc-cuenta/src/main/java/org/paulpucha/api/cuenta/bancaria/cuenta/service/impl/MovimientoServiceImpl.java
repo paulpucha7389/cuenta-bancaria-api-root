@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.ReporteDto;
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.entrada.MovimientoEntradaDto;
@@ -24,7 +23,9 @@ import org.paulpucha.api.cuenta.bancaria.cuenta.service.CuentaService;
 import org.paulpucha.api.cuenta.bancaria.cuenta.service.MovimientoService;
 import org.paulpucha.api.cuenta.bancaria.cuenta.model.entity.Movimiento;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -54,13 +55,9 @@ public class MovimientoServiceImpl implements MovimientoService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = CuentaException.class)
     public Movimiento create(MovimientoEntradaDto movimientoEntradaDto) throws CuentaException {
         try {
-            if (movimientoEntradaDto.getValor() <= 0) {
-                throw new CuentaException("El valor debe ser positivo.");
-            }
-
             String tipoMovimiento = movimientoEntradaDto.getTipoMovimiento();
             if (!TipoMovimientoEnum.CREDITO.getDescripcion().equalsIgnoreCase(tipoMovimiento) &&
                     !TipoMovimientoEnum.DEBITO.getDescripcion().equalsIgnoreCase(tipoMovimiento)
@@ -90,7 +87,7 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .saldo(saldo).saldoAnterior(cuenta.get().getSaldoInicial())
                 .tipoMovimiento(movimientoEntradaDto.getTipoMovimiento()).fecha(new Date())
                 .build();
-            //Actualizamos el saldo en al cuenta.
+            //Actualizar el saldo en al cuenta.
             cuenta.get().setSaldoInicial(movimiento.getSaldo());
             cuentaRepository.save(cuenta.get());
             return movimientoRepository.save(movimiento);
@@ -148,20 +145,21 @@ public class MovimientoServiceImpl implements MovimientoService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Modifying
+    @Transactional(rollbackFor = CuentaException.class)
     public Movimiento update(MovimientoEntradaDto movimientoEntradaDto) throws CuentaException {
         try {
             Optional<Cuenta> cuenta = cuentaService.obtenerPorNumeroCuenta(
-                movimientoEntradaDto.getNumeroCuenta());
+                    movimientoEntradaDto.getNumeroCuenta());
             if (!cuenta.isPresent()) {
                 throw new CuentaException("La cuenta no existe con el número de cuenta ingresado.");
             }
 
             List<Movimiento> movimientoList = obtenerPorNumeroCuenta(
-                movimientoEntradaDto.getNumeroCuenta());
+                    movimientoEntradaDto.getNumeroCuenta());
             if (movimientoList.isEmpty()) {
                 throw new CuentaException(
-                    "No existen movimientos a mostrar para el numero de cuenta ingresado.");
+                        "No existen movimientos a mostrar para el numero de cuenta ingresado.");
             }
             // Ordena la lista de movimientos por fecha (de más antiguo a más reciente)
             Collections.sort(movimientoList, Comparator.comparing(Movimiento::getFecha));
@@ -171,13 +169,14 @@ public class MovimientoServiceImpl implements MovimientoService {
 
             BigDecimal saldo = new BigDecimal(0);
             if (TipoMovimientoEnum.CREDITO.getDescripcion()
-                .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
+                    .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
                 saldo = credito(cuenta.get().getSaldoInicial(),
-                    BigDecimal.valueOf(movimientoEntradaDto.getValor()));
+                        BigDecimal.valueOf(movimientoEntradaDto.getValor()));
             } else if (TipoMovimientoEnum.DEBITO.getDescripcion()
-                .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
+                    .equalsIgnoreCase(movimientoEntradaDto.getTipoMovimiento())) {
                 saldo = debito(cuenta.get().getSaldoInicial(),
                         BigDecimal.valueOf(movimientoEntradaDto.getValor()));
+
             }
 
             movimiento.setTipoMovimiento(movimientoEntradaDto.getTipoMovimiento());
@@ -193,6 +192,7 @@ public class MovimientoServiceImpl implements MovimientoService {
             throw new CuentaException(e);
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -224,7 +224,7 @@ public class MovimientoServiceImpl implements MovimientoService {
             String[] fechas = fecha.split(",");
             if (fechas.length != 2) {
                 throw new CuentaException(
-                        "Coloque dos fechas con formato yyyyMMdd separadas como coma (.)");
+                        "Coloque dos fechas con formato yyyyMMdd separadas con coma (.)");
             }
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaInicial = formatter.parse(fechas[0]);

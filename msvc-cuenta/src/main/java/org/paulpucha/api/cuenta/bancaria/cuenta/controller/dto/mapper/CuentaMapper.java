@@ -6,8 +6,6 @@ import org.paulpucha.api.cuenta.bancaria.cuenta.model.entity.Cuenta;
 
 @Mapper(componentModel = "spring")
 public interface CuentaMapper {
-
-    //@Mapping(target = "nombresCliente", source= "cliente.nombre")
     CuentaSalidaDto toCuentaResponseDto(Cuenta cuenta);
 
 }

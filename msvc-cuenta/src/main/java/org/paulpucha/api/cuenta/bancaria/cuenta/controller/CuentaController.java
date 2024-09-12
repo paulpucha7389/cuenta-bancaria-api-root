@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.entrada.CuentaEntradaDto;
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.salida.BaseResponseDto;
 import org.paulpucha.api.cuenta.bancaria.cuenta.controller.util.ValidaWsUtil;
+import org.paulpucha.api.cuenta.bancaria.cuenta.exception.CuentaException;
 import org.paulpucha.api.cuenta.bancaria.cuenta.service.CuentaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,19 +55,24 @@ CuentaController {
      * @return ResponseEntity<BaseResponseDto> objeto o mensaje de error
      */
     @PostMapping
-    public ResponseEntity<BaseResponseDto> guardar(
-        @Valid @RequestBody CuentaEntradaDto cuentaEntradaDto,
-        BindingResult resultado) {
+    public ResponseEntity<BaseResponseDto> guardar(@Valid @RequestBody CuentaEntradaDto cuentaEntradaDto, BindingResult resultado) {
         try {
             if (resultado.hasErrors()) {
                 return ValidaWsUtil.validar(resultado);
             }
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponseDto.builder().data(service.create(cuentaEntradaDto)).build());
+                    .body(BaseResponseDto.builder().code(201).message("Cuenta creada correctamente").data(service.create(cuentaEntradaDto)).build());
+        } catch (CuentaException e) {
+            String errorMessage = e.getMessage();
+            Integer errorCode = e.getErrorCode() != null ? e.getErrorCode() : 400; // Usa el código de error de la excepción si está disponible
+            log.error(ERROR_MN, errorMessage);
+            return ResponseEntity.status(HttpStatus.valueOf(errorCode))
+                    .body(BaseResponseDto.builder().code(errorCode).message(errorMessage).errors("Error de integridad de datos").build());
         } catch (Exception e) {
-            log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+            String errorMessage = (e.getCause() != null) ? e.getCause().getMessage() : e.getMessage();
+            log.error(ERROR_MN, errorMessage);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseDto.builder().code(500).message(errorMessage).build());
         }
     }
 
@@ -80,17 +86,8 @@ CuentaController {
      * @return ResponseEntity<BaseResponseDto> lista o mensaje de error
      **/
     @GetMapping(path = "/{identificacion}")
-    public ResponseEntity<BaseResponseDto> obtenerCuentasPorCliente(
-        @PathVariable String identificacion) {
-        try {
-            return ResponseEntity.ok().body(
-                BaseResponseDto.builder().data(service.obtenerCuentasPorCliente(identificacion))
-                    .build());
-        } catch (Exception e) {
-            log.error(ERROR_MN, e.getCause().getMessage());
-            return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
-        }
+    public ResponseEntity<BaseResponseDto> obtenerCuentasPorCliente(@PathVariable String identificacion) throws CuentaException {
+            return ResponseEntity.ok().body(BaseResponseDto.builder().code(HttpStatus.OK.value()).data(service.obtenerCuentasPorCliente(identificacion)).build());
     }
 
     /**
@@ -104,18 +101,19 @@ CuentaController {
      */
     @PutMapping
     public ResponseEntity<BaseResponseDto> actualizar(
-        @Validated @RequestBody CuentaEntradaDto cuentaEntradaDto,
-        BindingResult resultado) {
+            @Validated @RequestBody CuentaEntradaDto cuentaEntradaDto,
+            BindingResult resultado) {
         try {
             if (resultado.hasErrors()) {
                 return ValidaWsUtil.validar(resultado);
             }
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponseDto.builder().data(service.update(cuentaEntradaDto)).build());
+                    .body(BaseResponseDto.builder().code(201).message("Cuenta actualizada correctamente").data(service.update(cuentaEntradaDto)).build());
         } catch (Exception e) {
-            log.error(ERROR_MN, e.getCause().getMessage());
+            String errorMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+            log.error(ERROR_MN, errorMessage);
             return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+                    .body(BaseResponseDto.builder().code(400).message(e.getMessage()).errors("Error en la entrada de datos").build());
         }
     }
 
@@ -133,11 +131,11 @@ CuentaController {
         try {
             service.delete(id);
             return ResponseEntity.ok()
-                .body(BaseResponseDto.builder().message("Registro Eliminado").build());
+                    .body(BaseResponseDto.builder().code(HttpStatus.NO_CONTENT.value()).message("Registro Eliminado").build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
             return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+                    .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
         }
     }
 }

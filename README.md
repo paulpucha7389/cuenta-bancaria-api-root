@@ -12,9 +12,12 @@ mvn clean install en windows.
 
 #Version Motor DB: PostgreSql 14.4
 
-Pasos para clonar el proyecto.
-Clonar el proyecto cuenta-bancaria-api-root.
+Pasos para clonar el proyecto.![img.png](img.png)
 Ejecutar mvn clean install en windows.
+Clonar el proyecto cuenta-bancaria-api-root.
+Ejecutar mvn clean package -Dmaven.test.skip
+Version Jdk Java hasta la 17
+
 Para ejecutar:
 1. `java -jar msvc-cliente-0.0.1-SNAPSHOT.jar.jar`
 2. `java -jar -Dspring.profiles.active=CONSOLA msvc-cliente-0.0.1-SNAPSHOT.jar`  (En este caso spring boot el profile CONSOLA)

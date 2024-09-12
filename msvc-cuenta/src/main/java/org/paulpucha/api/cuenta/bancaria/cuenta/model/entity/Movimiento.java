@@ -5,19 +5,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -57,44 +48,29 @@ public class Movimiento implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idMovimiento;
 
-	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
 
 	private BigDecimal saldo;
 
-	@NotBlank
-	@Column(name = "tipo_movimiento")
+	@Column(name = "tipo_movimiento", length = 10)
 	private String tipoMovimiento;
 
-	@NotNull
 	private BigDecimal valor;
 
 	@Column(name = "saldo_anterior")
 	private BigDecimal saldoAnterior;
 
-	@NotNull
 	@Column(name = "id_cuenta")
 	private Long idCuenta;
 
 	@Transient
 	private List<Cuenta> cuentaList;
 
-	/* bi-directional many-to-one association to Cliente
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idCliente", insertable = false, updatable = false)
-	@JsonIgnore
-	private Cliente cliente;
-
-	@Column
-	private Long idCliente;*/
-
 	// bi-directional many-to-one association to Cuenta
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_cuenta", insertable = false, updatable = false)
 	@JsonIgnore
 	private Cuenta cuenta;
-
-
 
 }

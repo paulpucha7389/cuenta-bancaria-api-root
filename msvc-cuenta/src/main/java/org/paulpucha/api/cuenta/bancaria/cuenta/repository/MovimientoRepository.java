@@ -35,7 +35,7 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
 			+ " m.saldo_anterior as saldoInicial, cu.estado, m.valor as movimiento, "
 			+ " m.saldo as saldoDisponible, m.tipo_movimiento as tipoMovimiento "
 			+ "FROM movimiento m, cuenta cu, cliente cl "
-			+ "where cu.id_cliente = cl.cliente_Id and m.id_cuenta = cu.id_cuenta "
+			+ "WHERE cu.id_cliente = cl.cliente_Id and m.id_cuenta = cu.id_cuenta "
 			+ "and CAST(m.fecha AS DATE) between CAST(:fechaInicial AS DATE) AND CAST(:fechaFinal AS DATE) "
 			+ "and cl.identificacion = :identificacion order by m.fecha desc", nativeQuery = true)
 	List<ReporteDto> obtenerMovimientosPorIdentificacionPorFechas(String identificacion, Date fechaInicial, Date fechaFinal);

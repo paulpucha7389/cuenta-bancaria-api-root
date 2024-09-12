@@ -23,9 +23,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BaseResponseDto<T> {
     //Patron Builder
-    @Builder.Default
-    private Integer code = 200;
+    private Integer code;
     private String message;
-    private List<String> errors;
+    private Object errors;
     private T data;
 }

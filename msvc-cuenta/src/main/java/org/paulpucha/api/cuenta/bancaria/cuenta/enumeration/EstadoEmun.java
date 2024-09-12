@@ -15,7 +15,7 @@ package org.paulpucha.api.cuenta.bancaria.cuenta.enumeration;
  */
 public enum EstadoEmun {
 
-	ACTIVO("A", "True"), INACTIVO("I", "False");
+	ACTIVO("A", "true"), INACTIVO("I", "false");
 
 	private String codigo;
 	private String descripcion;

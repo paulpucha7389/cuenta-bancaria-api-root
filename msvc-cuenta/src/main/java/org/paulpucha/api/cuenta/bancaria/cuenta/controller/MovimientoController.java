@@ -60,11 +60,11 @@ public class MovimientoController {
                 return ValidaWsUtil.validar(resultado);
             }
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(BaseResponseDto.builder().data(service.create(movimientoEntradaDto)).build());
+                    .body(BaseResponseDto.builder().code(201).message("Movimiento creado correctamente").data(service.create(movimientoEntradaDto)).build());
         } catch (CuentaException e) {
             log.error(ERROR_MN, e.getCause().getMessage());
             return ResponseEntity.badRequest()
-                    .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+                    .body(BaseResponseDto.builder().code(400).message(e.getCause().getMessage()).build());
         }
     }
 
@@ -81,7 +81,7 @@ public class MovimientoController {
         throws CuentaException {
         try {
             return ResponseEntity.ok().body(
-                BaseResponseDto.builder().data(service.obtenerPorNumeroCuenta(numeroCuenta))
+                BaseResponseDto.builder().code(200).data(service.obtenerPorNumeroCuenta(numeroCuenta))
                     .build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
@@ -107,11 +107,11 @@ public class MovimientoController {
                 return ValidaWsUtil.validar(resultado);
             }
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponseDto.builder().data(service.update(movimientoEntradaDto)).build());
+                .body(BaseResponseDto.builder().code(201).data("Movimiento actualizado correctamente").data(service.update(movimientoEntradaDto)).build());
         } catch (CuentaException e) {
             log.error(ERROR_MN, e.getCause().getMessage());
             return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+                .body(BaseResponseDto.builder().code(400).message(e.getCause().getMessage()).build());
         }
     }
 
@@ -129,11 +129,11 @@ public class MovimientoController {
         try {
             service.deleteByIdMovimiento(id);
             return ResponseEntity.ok()
-                .body(BaseResponseDto.builder().message("Registro Eliminado").build());
+                .body(BaseResponseDto.builder().code(200).message("Registro Eliminado").build());
         } catch (Exception e) {
             log.error(ERROR_MN, e.getCause().getMessage());
             return ResponseEntity.badRequest()
-                .body(BaseResponseDto.builder().message(e.getCause().getMessage()).build());
+                .body(BaseResponseDto.builder().code(400).message(e.getCause().getMessage()).build());
         }
     }
 

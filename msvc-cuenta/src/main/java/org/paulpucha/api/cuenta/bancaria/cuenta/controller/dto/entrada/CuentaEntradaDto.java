@@ -3,8 +3,11 @@
  */
 package org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.entrada;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.paulpucha.api.cuenta.bancaria.cuenta.enumeration.TipoCuentaEnum;
 
 /**
  *
@@ -33,18 +37,20 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CuentaEntradaDto {
 
-    @NotBlank
+    @Pattern(regexp = "^\\d{1,10}$", message = "permite solo dígitos del 0 al 9 y un máximo de 10 dígitos")
     private String identificacion;
 
-    @NotBlank
-    private String tipoCuenta;
+    @NotNull(message = "es requerido")
+    @Enumerated(EnumType.STRING)
+    private TipoCuentaEnum tipoCuenta;
 
-    @NotNull
-    private double saldoInicial;
+    @NotNull(message = "es requerido")
+    @Positive(message = "permite solo valores positivos")
+    private Double saldoInicial;
 
-    private String estado;
+    String estado;
 
-    @NotNull
-    private int numeroCuenta;
-
+    @NotNull(message = "es requerido")
+    @Positive(message = "permite solo valores positivos")
+    private Integer numeroCuenta;
 }

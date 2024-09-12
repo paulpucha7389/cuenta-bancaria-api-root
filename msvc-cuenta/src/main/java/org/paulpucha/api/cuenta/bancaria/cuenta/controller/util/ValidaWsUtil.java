@@ -18,13 +18,12 @@ public class ValidaWsUtil {
      * @return ResponseEntity<BaseResponseDto> lista o mensaje de error
      */
     public static ResponseEntity<BaseResponseDto> validar(
-        BindingResult resultado) {
+            BindingResult resultado) {
         Map<String, String> errores = new HashMap<>();
         resultado.getFieldErrors().forEach(error -> {
             errores.put(error.getField(),
-                "El campo " + error.getField() + " " + error.getDefaultMessage());
+                    "El campo " + error.getField() + " " + error.getDefaultMessage());
         });
-        return ResponseEntity.badRequest().body(BaseResponseDto.builder().data(errores).build());
+        return ResponseEntity.badRequest().body(BaseResponseDto.builder().code(400).message("Error en la entrada de datos").errors(errores).build());
     }
-
 }

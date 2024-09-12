@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.paulpucha.api.cuenta.bancaria.cuenta.enumeration.TipoCuentaEnum;
 import org.paulpucha.api.cuenta.bancaria.cuenta.exception.CuentaException;
 import org.paulpucha.api.cuenta.bancaria.cuenta.model.entity.Cuenta;
 import org.paulpucha.api.cuenta.bancaria.cuenta.model.entity.Movimiento;
@@ -43,22 +45,23 @@ public class MovimientoTest {
         listaMovimientoEsperado.add(movimientoEsperado_dos);
 
         Cuenta cuentaEsperada = Cuenta.builder().numeroCuenta(456789).idCuenta(1L).idCliente(1L).
-            tipoCuenta("Ahorros").saldoInicial(BigDecimal.valueOf(1000L)).estado("True").build();
+            tipoCuenta(TipoCuentaEnum.AHORROS).saldoInicial(BigDecimal.valueOf(1000L)).estado("True").build();
 
         List<Movimiento> respuestaActual;
         when(this.cuentaRepository.findByNumeroCuenta(456789)).thenReturn(
             Optional.ofNullable(cuentaEsperada));
         when(this.movimientoRepository.findByIdCuenta(1L)).thenReturn(listaMovimientoEsperado);
         respuestaActual = this.movimientoService.obtenerPorNumeroCuenta(456789);
-        Assert.assertNotNull(respuestaActual);
+        Assertions.assertNotNull(respuestaActual);
     }
 
+    @Test
     void whenObtenerPorNumeroCuentaThenEmptyList() throws CuentaException {
 
         List<Movimiento> listaMovimientoEsperado = new ArrayList<>();
 
         Cuenta cuentaEsperada = Cuenta.builder().numeroCuenta(456789).idCuenta(1L).idCliente(1L).
-                tipoCuenta("Ahorros").saldoInicial(BigDecimal.valueOf(1000L)).estado("True").build();
+                tipoCuenta(TipoCuentaEnum.AHORROS).saldoInicial(BigDecimal.valueOf(1000L)).estado("True").build();
 
         when(this.cuentaRepository.findByNumeroCuenta(456789)).thenReturn(Optional.of(cuentaEsperada));
 

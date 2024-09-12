@@ -1,12 +1,10 @@
 package org.paulpucha.api.cuenta.bancaria.cliente.model.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -40,7 +38,7 @@ public class Cliente extends Persona implements Serializable {
 
     @Builder
     public Cliente(Long clienteId, String direccion, int edad, String genero, String identificacion, String nombre,
-        String telefono, String contrasena, String estado) {
+        String telefono, String contrasena, Boolean estado) {
         super(direccion, edad, genero, identificacion, nombre, telefono);
         this.contrasena = contrasena;
         this.estado = estado;
@@ -52,9 +50,7 @@ public class Cliente extends Persona implements Serializable {
     @Column(name = "cliente_Id")
     private Long clienteId;
 
-    @NotBlank
     private String contrasena;
 
-    private String estado;
-
+    private Boolean estado;
 }

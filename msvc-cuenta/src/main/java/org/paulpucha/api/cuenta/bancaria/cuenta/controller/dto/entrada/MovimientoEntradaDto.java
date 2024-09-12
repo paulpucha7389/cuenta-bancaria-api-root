@@ -3,8 +3,8 @@
  */
 package org.paulpucha.api.cuenta.bancaria.cuenta.controller.dto.entrada;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -34,14 +34,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MovimientoEntradaDto {
 
-
-	@NotEmpty
+	@NotNull(message = "es requerido")
+	@NotEmpty(message = "requiere tipo movimiento 'debito o 'credito'")
 	private String tipoMovimiento;
 
-	@NotNull
-	private double valor;
+	@NotNull(message = "es requerido")
+	@Positive(message = "solo permite valores positivos")
+	private Double valor;
 
-	@NotNull
-	private int numeroCuenta;
+	@NotNull(message = "es requerido")
+	@Positive(message = "solo permite valores positivos")
+	private Integer numeroCuenta;
 
 }

@@ -2,7 +2,8 @@ package org.paulpucha.api.cuenta.bancaria.cliente;
 
 import static org.mockito.Mockito.when;
 import java.util.Optional;
-import org.junit.Assert;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +28,7 @@ public class ClienteTest {
         String identificacionEntrada = "1720693500";
         Cliente clienteSalidaEsperada = Cliente.builder().nombre("Jose Lema ")
             .direccion("Otavalo sn y principal ")
-            .telefono("098254785").contrasena("1234").estado("True").build();
+            .telefono("098254785").contrasena("1234").estado(true).build();
         Optional<Cliente> actualRespuesta;
         try {
             when(this.clienteRepository.obtenerPorIdentificacion(identificacionEntrada)).thenReturn(
@@ -36,6 +37,6 @@ public class ClienteTest {
         } catch (ClienteException e) {
             throw new ClienteException(e);
         }
-        Assert.assertEquals(Optional.ofNullable(clienteSalidaEsperada), actualRespuesta);
+        Assertions.assertEquals(Optional.ofNullable(clienteSalidaEsperada), actualRespuesta);
     }
 }

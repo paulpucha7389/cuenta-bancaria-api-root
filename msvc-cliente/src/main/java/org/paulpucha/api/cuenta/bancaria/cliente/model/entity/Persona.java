@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -35,21 +36,21 @@ import lombok.Setter;
 public class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@NotBlank
 	private String direccion;
 
+	@Column(length = 3)
 	private int edad;
 
+	@Column(length = 20)
 	private String genero;
 
-	@Column(unique = true)
-	@NotBlank
+	@Column(unique = true, length = 10)
 	private String identificacion;
 
-	@NotBlank
+	@Column(length = 60)
 	private String nombre;
 
-	@NotBlank
+	@Column(length = 10)
 	private String telefono;
 
 }
